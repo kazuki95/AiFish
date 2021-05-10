@@ -27,7 +27,7 @@ public class FlockManager : MonoBehaviour
         allFish = new GameObject[numFish]; 
         for (int i = 0; i < numFish; i++) 
         {
-            //dados x,y,z do cardume
+            //dados x,y,z do cardume do apareciemnto dos peixes
             Vector3 pos = this.transform.position + new Vector3(Random.Range(-swinLimits.x, swinLimits.x),
                 Random.Range(-swinLimits.y, swinLimits.y),
                 Random.Range(-swinLimits.z, swinLimits.z));
@@ -35,13 +35,17 @@ public class FlockManager : MonoBehaviour
             allFish[i] = (GameObject)Instantiate(fishPrefab, pos, Quaternion.identity);
             allFish[i].GetComponent<Flock>().myManager = this; 
         }
+        //local onde o cardume deve ir
         goalPos = this.transform.position;  
     }
     void Update() 
     {
-        //setando eixos x,y,z do cardume
-        goalPos = this.transform.position + new Vector3(Random.Range(-swinLimits.x, swinLimits.x),
-            Random.Range(-swinLimits.y, swinLimits.y), Random.Range(-swinLimits.z, swinLimits.z));
+        //local onde o cardume deve ir
+        goalPos = this.transform.position;
+        if(Random.Range(0,100) < 10)
+            goalPos = this.transform.position + new Vector3(Random.Range(-swinLimits.x, swinLimits.x),
+            Random.Range(-swinLimits.y, swinLimits.y),
+            Random.Range(-swinLimits.z, swinLimits.z));
     }
 }
 

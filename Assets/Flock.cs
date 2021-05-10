@@ -16,16 +16,26 @@ public class Flock : MonoBehaviour
         // limite maximo que o peixe consegue nadar
         Bounds b = new Bounds(myManager.transform.position, myManager.swinLimits * 2);
 
+        RaycastHit hit = new RaycastHit();
+        Vector3 direction = myManager.transform.position - transform.position;
+
         if (!b.Contains(transform.position))
         {
+//usando raycast e reflect para que o cardume evite de passar por dentro do pilar
             turning = true;
+            direction = myManager.transform.position - transform.position;
         }
+        else if (Physics.Raycast(transform.position, this.transform.forward * 50, out hit))
+        {
+            turning = true;
+            direction = Vector3.Reflect(this.transform.forward, hit.normal);
+        }
+
         else
             turning = false;
         // rotação do turning
-        if (turning) 
-        {
-            Vector3 direction = myManager.transform.position - transform.position;
+        if (turning)        
+        {       
             transform.rotation = Quaternion.Slerp(transform.rotation, 
                 Quaternion.LookRotation(direction), 
                 myManager.rotationSpeed * Time.deltaTime);
@@ -42,19 +52,19 @@ public class Flock : MonoBehaviour
 
     void ApplyRules()
     {
-        //array
+        //array criado
         GameObject[] gos;
         gos = myManager.allFish;
-
+//dados da movimentação dos peixes
         Vector3 vcentre = Vector3.zero;
         Vector3 vavoid = Vector3.zero;
         float gSpeed = 0.01f;
         float nDistance;
         int groupSize = 0;
-
+//fazendo os peixes entrarem no cardume
         foreach (GameObject go in gos)
         {
-            //distancia dos peixes e seus vizinhos
+//distancia dos peixes e seus vizinhos
             if (go != this.gameObject)
             {
                 nDistance = Vector3.Distance(go.transform.position, this.transform.position);
@@ -82,7 +92,7 @@ public class Flock : MonoBehaviour
                     }
                 }
 
-                // contagem do grupo de peixes
+                // rotação do grupo de peixes
                 if (groupSize > 0) 
                     {
                     vcentre = vcentre / groupSize + (myManager.goalPos - this.transform.position);
